@@ -6,7 +6,9 @@
 	#define DS18B20_dataPin GPIO_Pin_9
 #endif
 
+#ifndef DS18B20_MAX_DEVICES
 #define DS18B20_MAX_DEVICES 10
+#endif
 
 
 uint8_t ds18b20_ids[DS18B20_MAX_DEVICES][8];
