@@ -10,6 +10,10 @@
 #define DS18B20_MAX_DEVICES 10
 #endif
 
+#ifndef DS18B20_NEED_SCAN
+#define DS18B20_NEED_SCAN 1
+#endif
+
 
 uint8_t ds18b20_ids[DS18B20_MAX_DEVICES][8];
 uint8_t ds18b20_search_finished = 0;
@@ -254,6 +258,7 @@ uint8_t ds18b20_search_rom(uint8_t *Addr)
 
 /// @brief Initialization of module ds18b20. Insert before main loop.
 void ds18b20_ini(){
+    if(DS18B20_NEED_SCAN){
         if(!ds18b20_search_finished){
             uint8_t dt[8];
                 
@@ -266,6 +271,7 @@ void ds18b20_ini(){
             }
             ds18b20_search_finished = 1;
         }
+    }
 
 }
 
