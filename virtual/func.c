@@ -1,6 +1,7 @@
 #define VIRTUAL_NUM_OF_SWITCH 8
 #define VIRTUAL_NUM_OF_BUTTON 8
 #define VIRTUAL_NUM_OF_BINARY_SENSOR 8
+#define VIRTUAL_NUM_OF_NUMERIC 8
 
 #ifndef VIRTUAL_NUM_OF_SWITCH
 	#define VIRTUAL_NUM_OF_SWITCH 0
@@ -14,8 +15,13 @@
 	#define VIRTUAL_NUM_OF_BINARY_SENSOR 0
 #endif
 
+#ifndef VIRTUAL_NUM_OF_NUMERIC
+	#define VIRTUAL_NUM_OF_NUMERIC 0
+#endif
+
 
 uint8_t virtual_switch_state[VIRTUAL_NUM_OF_SWITCH], virtual_button_state[VIRTUAL_NUM_OF_BUTTON], virtual_binary_sensor_state[VIRTUAL_NUM_OF_BINARY_SENSOR]; 
+int16_t virtual_numeric[VIRTUAL_NUM_OF_NUMERIC]; 
 
 /// @brief Interruptions, called every millisecond
 void virtual_int(){
@@ -32,6 +38,9 @@ void virtual_ini(){
     }
 	for(uint8_t i=0;i < VIRTUAL_NUM_OF_BINARY_SENSOR;i++){
         virtual_binary_sensor_state[i] = 0;
+    }
+	for(uint8_t i=0;i < VIRTUAL_NUM_OF_NUMERIC;i++){
+        virtual_numeric[i] = 0;
     }
 }
 
@@ -101,29 +110,51 @@ uint8_t virtual_binary_sensor_get_state(uint8_t virtual_binary_sensor){
 	else return 0;
 }
 
+/// @brief Set virtual numeric
+/// @param index index of numeric
+/// @param value value to set
+void virtual_numeric_set_value(uint8_t index, int16_t value){
+	if (index < 1 || index > VIRTUAL_NUM_OF_NUMERIC) return;
+	virtual_numeric[index - 1] = value;
+}
+
+/// @brief Get virtual numeric
+/// @param index index of numeric
+int16_t virtual_numeric_get_value(uint8_t index){
+	if (index < 1 || index > VIRTUAL_NUM_OF_NUMERIC) return 0;
+	return virtual_numeric[index - 1];
+}
+
 /// @brief Appends input data
 /// @param body string where to append input data
 void virtual_add_data_to_str(char *body){
-	strcat(body, "\"virtual_switch\":[");
+	strcat(body, "\"v_switch\":[");
     for(uint8_t i = 0; i < VIRTUAL_NUM_OF_SWITCH; i++){
 			char temp[5];
 			xsprintf(temp, "%d,", virtual_switch_get_state(i+1));
 			strcat(body, temp);
 			if((i+1) == VIRTUAL_NUM_OF_SWITCH) body[strlen(body) - 1] = '\0';
         }
-	strcat(body, "],\"virtual_button\":[");
+	strcat(body, "],\"v_button\":[");
 	for(uint8_t i = 0; i < VIRTUAL_NUM_OF_BUTTON; i++){
 			char temp[5];
 			xsprintf(temp, "%d,", virtual_button_get_state(i+1));
 			strcat(body, temp);
 			if((i+1) == VIRTUAL_NUM_OF_BUTTON) body[strlen(body) - 1] = '\0';
         }
-	strcat(body, "],\"virtual_binary_sensor\":[");
+	strcat(body, "],\"v_binary_sensor\":[");
 	for(uint8_t i = 0; i < VIRTUAL_NUM_OF_BINARY_SENSOR; i++){
 			char temp[5];
 			xsprintf(temp, "%d,", virtual_binary_sensor_get_state(i+1));
 			strcat(body, temp);
 			if((i+1) == VIRTUAL_NUM_OF_BINARY_SENSOR) body[strlen(body) - 1] = '\0';
+        }
+	strcat(body, "],\"v_numeric\":[");
+	for(uint8_t i = 0; i < VIRTUAL_NUM_OF_NUMERIC; i++){
+			char temp[5];
+			xsprintf(temp, "%d,", virtual_numeric_get_value(i+1));
+			strcat(body, temp);
+			if((i+1) == VIRTUAL_NUM_OF_NUMERIC) body[strlen(body) - 1] = '\0';
         }
 	strcat(body, "]");
 
@@ -132,7 +163,7 @@ void virtual_add_data_to_str(char *body){
 /// @brief Appends input data
 /// @param body string where to append input data
 void virtual_add_info_to_str(char *body){
-	char temp[75];
-	xsprintf(temp, "\"virtual_switch\":%d,\"virtual_button\":%d,\"virtual_binary_sensor\":%d",VIRTUAL_NUM_OF_SWITCH,VIRTUAL_NUM_OF_BUTTON,VIRTUAL_NUM_OF_BINARY_SENSOR);
+	char temp[100];
+	xsprintf(temp, "\"v_switch\":%d,\"v_button\":%d,\"v_sensor\":%d,\"v_numeric\":%d",VIRTUAL_NUM_OF_SWITCH,VIRTUAL_NUM_OF_BUTTON,VIRTUAL_NUM_OF_BINARY_SENSOR, VIRTUAL_NUM_OF_NUMERIC);
 	strcat(body, temp);
 }
