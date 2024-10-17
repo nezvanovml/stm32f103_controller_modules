@@ -5,28 +5,7 @@ There are 4 types of input:
 * Binary_Sensor (0/1) - simple state (on/off). Maximum: 8. By default pulled-up to +3.3v
 * Analog_input (0..100) ADC. Maximum: 10.
 */
-#if InputConnection == 1 // relay
-	#define INPUT_NUM_OF_BUTTON 4
-	
-	#define Button_ch1_Port GPIOB
-	#define Button_ch1_Pin GPIO_Pin_9
-	#define Button_ch1_Inverted 1
-	#define Button_ch2_Port GPIOB
-	#define Button_ch2_Pin GPIO_Pin_8
-	#define Button_ch2_Inverted 1
-	#define Button_ch3_Port GPIOB
-	#define Button_ch3_Pin GPIO_Pin_7
-	#define Button_ch3_Inverted 1
-	#define Button_ch4_Port GPIOB
-	#define Button_ch4_Pin GPIO_Pin_6
-	#define Button_ch4_Inverted 1
-
-	#define INPUT_NUM_OF_COUNTER 1
-
-	#define Counter_ch1_Port GPIOB
-	#define Counter_ch1_Pin GPIO_Pin_9
-
-#elif InputConnection == 2 // access, watering
+#if InputConnection == 1 // access, watering
 	#define INPUT_NUM_OF_BUTTON 5
 	
 	#define Button_ch1_Port GPIOA
@@ -70,7 +49,7 @@ There are 4 types of input:
 	#define BinarySensor_ch5_Port GPIOA
 	#define BinarySensor_ch5_Pin GPIO_Pin_1
 	#define BinarySensor_ch5_Inverted 0
-#elif InputConnection == 3 // waterleaks
+#elif InputConnection == 2 // waterleaks
 	#define INPUT_NUM_OF_BINARY_SENSOR 6
 
 	#define BinarySensor_ch1_Port GPIOA
@@ -102,7 +81,7 @@ There are 4 types of input:
 	#define BinarySensor_ch6_Pin GPIO_Pin_11
 	#define BinarySensor_ch6_Inverted 1
 	#define BinarySensor_ch6_NeedPullDown 0
-#elif InputConnection == 4 // FSCD, movesensors
+#elif InputConnection == 3 // FSCD, movesensors
 	#define INPUT_NUM_OF_ANALOG_INPUT 3
 
 	#define AnalogInput_ch1_Port GPIOA
@@ -117,36 +96,33 @@ There are 4 types of input:
 	#define AnalogInput_ch3_Pin GPIO_Pin_2
 	#define AnalogInput_ch3_ADC_Channel ADC_Channel_2
 
-	// #define AnalogInput_ch4_Port GPIOA
-	// #define AnalogInput_ch4_Pin GPIO_Pin_3
-	// #define AnalogInput_ch4_ADC_Channel ADC_Channel_3
+	#define AnalogInput_ch4_Port GPIOA
+	#define AnalogInput_ch4_Pin GPIO_Pin_3
+	#define AnalogInput_ch4_ADC_Channel ADC_Channel_3
 	
-	// #define AnalogInput_ch5_Port GPIOA
-	// #define AnalogInput_ch5_Pin GPIO_Pin_4
-	// #define AnalogInput_ch5_ADC_Channel ADC_Channel_4
+	#define AnalogInput_ch5_Port GPIOA
+	#define AnalogInput_ch5_Pin GPIO_Pin_4
+	#define AnalogInput_ch5_ADC_Channel ADC_Channel_4
 
-	// #define AnalogInput_ch6_Port GPIOA
-	// #define AnalogInput_ch6_Pin GPIO_Pin_5
-	// #define AnalogInput_ch6_ADC_Channel ADC_Channel_5
+	#define AnalogInput_ch6_Port GPIOA
+	#define AnalogInput_ch6_Pin GPIO_Pin_5
+	#define AnalogInput_ch6_ADC_Channel ADC_Channel_5
 
-	// #define AnalogInput_ch7_Port GPIOA
-	// #define AnalogInput_ch7_Pin GPIO_Pin_6
-	// #define AnalogInput_ch7_ADC_Channel ADC_Channel_6
+	#define AnalogInput_ch7_Port GPIOA
+	#define AnalogInput_ch7_Pin GPIO_Pin_6
+	#define AnalogInput_ch7_ADC_Channel ADC_Channel_6
 
-	// #define AnalogInput_ch8_Port GPIOA
-	// #define AnalogInput_ch8_Pin GPIO_Pin_7
-	// #define AnalogInput_ch8_ADC_Channel ADC_Channel_7
+	#define AnalogInput_ch8_Port GPIOA
+	#define AnalogInput_ch8_Pin GPIO_Pin_7
+	#define AnalogInput_ch8_ADC_Channel ADC_Channel_7
 
-	// #define AnalogInput_ch9_Port GPIOB
-	// #define AnalogInput_ch9_Pin GPIO_Pin_0
-	// #define AnalogInput_ch9_ADC_Channel ADC_Channel_8
+	#define AnalogInput_ch9_Port GPIOB
+	#define AnalogInput_ch9_Pin GPIO_Pin_0
+	#define AnalogInput_ch9_ADC_Channel ADC_Channel_8
 
-	// #define AnalogInput_ch10_Port GPIOB
-	// #define AnalogInput_ch10_Pin GPIO_Pin_1
-	// #define AnalogInput_ch10_ADC_Channel ADC_Channel_9
-
-	
-
+	#define AnalogInput_ch10_Port GPIOB
+	#define AnalogInput_ch10_Pin GPIO_Pin_1
+	#define AnalogInput_ch10_ADC_Channel ADC_Channel_9
 
 #endif
 
