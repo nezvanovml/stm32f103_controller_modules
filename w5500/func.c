@@ -347,7 +347,6 @@ int32_t http_server_process(uint8_t sn, uint16_t port, struct HttpRequest * http
    switch(getSn_SR(sn))
    {
       case SOCK_ESTABLISHED :
-	  	LEDON(9);LEDOFF(10);LEDOFF(11);LEDOFF(12);
          if(getSn_IR(sn) & Sn_IR_CON)
          {
 			setSn_IR(sn,Sn_IR_CON);
@@ -385,16 +384,13 @@ int32_t http_server_process(uint8_t sn, uint16_t port, struct HttpRequest * http
          
          break;
       case SOCK_CLOSE_WAIT :
-			LEDOFF(9);LEDON(10);LEDOFF(11);LEDOFF(12);
         	if((ret = disconnect(sn)) != SOCK_OK) return HTTP_ERROR;
 
          	break;
       case SOCK_INIT :
-			LEDOFF(9);LEDOFF(10);LEDON(11);LEDOFF(12);
          	if( (ret = listen(sn)) != SOCK_OK) return HTTP_ERROR;
          	break;
       case SOCK_CLOSED:
-			LEDOFF(9);LEDOFF(10);LEDOFF(11);LEDON(12);
 			if((ret = socket(sn, Sn_MR_TCP, port, 0x00)) != sn) return HTTP_ERROR;
 
 			break;
