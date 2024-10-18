@@ -84,6 +84,13 @@ uint8_t virtual_button_get_state(uint8_t virtual_button){
 	else return 0;
 }
 
+/// @brief Reset virtual_button if is pressed.
+/// @param virtual_button 
+void virtual_button_reset_state(uint8_t virtual_button){
+	if (virtual_button < 1 || virtual_button > VIRTUAL_NUM_OF_BUTTON) return 0;
+	virtual_button_state[virtual_button - 1] = 0;
+}
+
 /// @brief Turns virtual_binary_sensor ON
 /// @param virtual_binary_sensor number of virtual_binary_sensor (1...VIRTUAL_NUM_OF_BINARY_SENSOR)
 void VIRTUAL_BINARY_SENSOR_ON(uint8_t virtual_binary_sensor){
