@@ -20,6 +20,17 @@
 	#define IOModule_checkPin GPIO_Pin_15
 	#define IOModule_MISOPort GPIOA
 	#define IOModule_MISOPin GPIO_Pin_8
+#elif IOModuleConnection == 3 // FSCD, movesensors
+	#define IOModule_clockPort GPIOA
+	#define IOModule_clockPin GPIO_Pin_15
+	#define IOModule_MOSIPort GPIOA
+	#define IOModule_MOSIPin GPIO_Pin_12
+	#define IOModule_latchPort GPIOA 
+	#define IOModule_latchPin GPIO_Pin_11 
+	#define IOModule_checkPort GPIOA
+	#define IOModule_checkPin GPIO_Pin_1
+	#define IOModule_MISOPort GPIOA
+	#define IOModule_MISOPin GPIO_Pin_9
 #endif
 
 volatile uint8_t io_module_r[]={0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}, io_module_w[]={0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};

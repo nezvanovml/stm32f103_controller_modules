@@ -75,6 +75,15 @@
 	#define Relay_ch1_Pin GPIO_Pin_9
 	#define Relay_ch2_Port GPIOA
 	#define Relay_ch2_Pin GPIO_Pin_10
+#elif RelayConnection == 6 // FSCD, movesensors
+	#define RELAY_NUM_OF_CHANNELS 2
+
+	#define Relay_ch1_Port GPIOB
+	#define Relay_ch1_Pin GPIO_Pin_3 // reset
+	#define Relay_ch2_Port GPIOB
+	#define Relay_ch2_Pin GPIO_Pin_4 // alarm
+
+	#define DISABLE_JTAG 1
 #endif
 
 #ifndef RELAY_IMPULSE_LONG
