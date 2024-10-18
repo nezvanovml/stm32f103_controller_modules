@@ -28,7 +28,7 @@
 	#define IOModule_latchPort GPIOA 
 	#define IOModule_latchPin GPIO_Pin_11 
 	#define IOModule_checkPort GPIOA
-	#define IOModule_checkPin GPIO_Pin_1
+	#define IOModule_checkPin GPIO_Pin_10
 	#define IOModule_MISOPort GPIOA
 	#define IOModule_MISOPin GPIO_Pin_9
 #endif
