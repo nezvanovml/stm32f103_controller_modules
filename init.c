@@ -33,6 +33,13 @@ uint16_t interruption_counter = 0;
 
 void modules_init(){
 
+    #if USE_WATCHDOG == 1
+    IWDG_WriteAccessCmd(IWDG_Prescaler_4);
+    IWDG_SetReload(0x0FFF);
+    IWDG_ReloadCounter();
+    IWDG_Enable();
+    #endif
+
     #ifdef IOModuleConnection
     #include "modules/io_module/gpio.c"
     #endif
@@ -80,6 +87,10 @@ void modules_init(){
 
 
 void modules_interruptions(){
+    #if USE_WATCHDOG == 1
+    IWDG_ReloadCounter();
+    #endif
+
     // Counting working time
     interruption_counter++;
     if(interruption_counter >= 1000){
