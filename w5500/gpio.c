@@ -42,5 +42,12 @@ SPI_InitStructure.SPI_FirstBit = SPI_FirstBit_MSB;
 SPI_InitStructure.SPI_CRCPolynomial = 0x7;
 SPI_InitStructure.SPI_Mode = SPI_Mode_Master;  
 for(int a = 0; a < 65536;a++) for(int b = 0; b < 65536; b++);
+
+#if W5500_SPI == SPI1
+RCC_APB2PeriphClockCmd(RCC_APB2Periph_SPI1, ENABLE);
+#elif W5500_SPI == SPI2
+RCC_APB1PeriphClockCmd(RCC_APB1Periph_SPI2, ENABLE);
+#endif
+
 SPI_Init(W5500_SPI, &SPI_InitStructure); 
 SPI_Cmd(W5500_SPI, ENABLE);
