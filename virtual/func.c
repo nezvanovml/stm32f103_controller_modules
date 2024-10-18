@@ -144,7 +144,7 @@ void virtual_add_data_to_str(char *body){
 			strcat(body, temp);
 			if((i+1) == VIRTUAL_NUM_OF_BUTTON) body[strlen(body) - 1] = '\0';
         }
-	strcat(body, "],\"v_sensor\":[");
+	strcat(body, "],\"v_binary_sensor\":[");
 	for(uint8_t i = 0; i < VIRTUAL_NUM_OF_BINARY_SENSOR; i++){
 			char temp[5];
 			xsprintf(temp, "%d,", virtual_binary_sensor_get_state(i+1));
@@ -166,6 +166,6 @@ void virtual_add_data_to_str(char *body){
 /// @param body string where to append input data
 void virtual_add_info_to_str(char *body){
 	char temp[100];
-	xsprintf(temp, "\"v_switch\":%d,\"v_button\":%d,\"v_sensor\":%d,\"v_numeric\":%d",VIRTUAL_NUM_OF_SWITCH,VIRTUAL_NUM_OF_BUTTON,VIRTUAL_NUM_OF_BINARY_SENSOR, VIRTUAL_NUM_OF_NUMERIC);
+	xsprintf(temp, "\"v_switch\":%d,\"v_button\":%d,\"v_binary_sensor\":%d,\"v_numeric\":%d",VIRTUAL_NUM_OF_SWITCH,VIRTUAL_NUM_OF_BUTTON,VIRTUAL_NUM_OF_BINARY_SENSOR, VIRTUAL_NUM_OF_NUMERIC);
 	strcat(body, temp);
 }
