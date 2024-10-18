@@ -82,7 +82,7 @@ There are 4 types of input:
 	#define BinarySensor_ch6_Inverted 1
 	#define BinarySensor_ch6_NeedPullDown 0
 #elif InputConnection == 3 // FSCD, movesensors
-	#define INPUT_NUM_OF_ANALOG_INPUT 3
+	#define INPUT_NUM_OF_ANALOG_INPUT 10
 
 	#define AnalogInput_ch1_Port GPIOA
 	#define AnalogInput_ch1_Pin GPIO_Pin_0
