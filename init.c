@@ -35,8 +35,13 @@ void modules_init(){
 
     #ifdef IOModuleConnection
     #include "modules/io_module/gpio.c"
+    #endif
+
+    #ifdef DEVICE_INDEX
+    device_index = (uint8_t)DEVICE_INDEX;
+    #else
     delay_ms(1000); // needed for convert DIP switch to device_index
-	device_index = io_module_get_device_index();
+    device_index = io_module_get_device_index();
     #endif
     
     #if DISABLE_JTAG == 1
