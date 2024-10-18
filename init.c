@@ -1,4 +1,10 @@
 #define MODULES_VERSION 1
+
+// Counting working time
+uint32_t seconds_since_start = 0; // Counts how seconds controller is online
+uint16_t interruption_counter = 0;
+// End counting working time
+
 #include "utils.c"
 #include "Libraries/xprintf/xprintf.c"
 
@@ -69,6 +75,13 @@ void modules_init(){
 
 
 void modules_interruptions(){
+    // Counting working time
+    interruption_counter++;
+    if(interruption_counter >= 1000){
+        seconds_since_start++;
+        interruption_counter = 0;
+    }
+    // End counting working time
     
     #ifdef IOModuleConnection
 	io_panel_int();

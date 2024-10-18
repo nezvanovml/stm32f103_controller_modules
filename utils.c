@@ -61,7 +61,7 @@ int16_t get_int_from_str(char* str){
 }
 
 void collect_system_info(char *body){
-    xsprintf(body, "{\"device_index\":%d,\"version\":%d,",device_index, MODULES_VERSION);
+    xsprintf(body, "{\"device_index\":%d,\"version\":%d,\"up\":%ld,",device_index, MODULES_VERSION, seconds_since_start);
 
     uint8_t modules = 0;
     #ifdef RelayConnection
