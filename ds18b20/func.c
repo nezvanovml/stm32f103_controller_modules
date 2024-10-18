@@ -170,10 +170,13 @@ int8_t get_fraction(float input){
 /// @param temp address of string where to save result 
 void temperature_to_str(float input, char* temp){
     // TODO: returns -0.0 if unavailable, target = null
-    if (input < 0){
-        xsprintf(temp, "-%d.%d", get_integer(input), get_fraction(input));
+    uint8_t integer_part = get_integer(input), fraction_part = get_fraction(input);
+    if(input < 0 && integer_part == 0 && fraction_part == 0){
+        xsprintf(temp, "null");
+    } else if (input < 0){
+        xsprintf(temp, "-%d.%d", integer_part, fraction_part);
     } else {
-        xsprintf(temp, "%d.%d", get_integer(input), get_fraction(input));
+        xsprintf(temp, "%d.%d", integer_part, fraction_part);
     }
 }
 
