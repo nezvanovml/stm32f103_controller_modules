@@ -60,10 +60,17 @@ uint16_t w5500_timer = 0;
 uint16_t w5500_port_number = 0;
 
 void SPIReadWrite (uint8_t data) {
-	while(SPI_I2S_GetFlagStatus(W5500_SPI, SPI_I2S_FLAG_TXE) == RESET);
-	SPI_I2S_SendData(W5500_SPI, data);
-	while(SPI_I2S_GetFlagStatus(W5500_SPI, SPI_I2S_FLAG_RXNE) == RESET);
-	SPI_I2S_ReceiveData(W5500_SPI);
+	#if W5500_SPI == 1
+	while(SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_TXE) == RESET);
+	SPI_I2S_SendData(SPI1, data);
+	while(SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_RXNE) == RESET);
+	SPI_I2S_ReceiveData(SPI1);
+	#else if W5500_SPI == 2
+	while(SPI_I2S_GetFlagStatus(SPI2, SPI_I2S_FLAG_TXE) == RESET);
+	SPI_I2S_SendData(SPI2, data);
+	while(SPI_I2S_GetFlagStatus(SPI2, SPI_I2S_FLAG_RXNE) == RESET);
+	SPI_I2S_ReceiveData(SPI2);
+	#endif
 }
 
 uint8_t w5500_initialized = 0;
