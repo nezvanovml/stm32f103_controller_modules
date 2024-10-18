@@ -30,8 +30,15 @@ Init_PORT.GPIO_Speed = GPIO_Speed_10MHz;
 Init_PORT.GPIO_Mode = GPIO_Mode_AF_PP;
 GPIO_Init(W5500_clockPort, &Init_PORT);
 
+#if W5500_SPI == 1
+RCC_APB2PeriphClockCmd(RCC_APB2Periph_SPI1, ENABLE);
+SPI_I2S_DeInit( SPI1 ); 
+#elif W5500_SPI == 2
+RCC_APB1PeriphClockCmd(RCC_APB1Periph_SPI2, ENABLE);
+SPI_I2S_DeInit( SPI2 ); 
+#endif
 
-SPI_I2S_DeInit( W5500_SPI ); 
+
 SPI_InitStructure.SPI_Direction = SPI_Direction_2Lines_FullDuplex; 
 SPI_InitStructure.SPI_DataSize = SPI_DataSize_8b;
 SPI_InitStructure.SPI_CPOL = SPI_CPOL_Low; 
@@ -43,11 +50,14 @@ SPI_InitStructure.SPI_CRCPolynomial = 0x7;
 SPI_InitStructure.SPI_Mode = SPI_Mode_Master;  
 for(int a = 0; a < 65536;a++) for(int b = 0; b < 65536; b++);
 
-#if W5500_SPI == SPI1
-RCC_APB2PeriphClockCmd(RCC_APB2Periph_SPI1, ENABLE);
-#elif W5500_SPI == SPI2
-RCC_APB1PeriphClockCmd(RCC_APB1Periph_SPI2, ENABLE);
+
+#if W5500_SPI == 1
+SPI_Init(SPI1, &SPI_InitStructure); 
+SPI_Cmd(SPI1, ENABLE);
+#elif W5500_SPI == 2
+SPI_Init(SPI2, &SPI_InitStructure); 
+SPI_Cmd(SPI2, ENABLE);
 #endif
 
-SPI_Init(W5500_SPI, &SPI_InitStructure); 
-SPI_Cmd(W5500_SPI, ENABLE);
+
+

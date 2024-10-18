@@ -14,7 +14,7 @@
     #define W5500_clockPort GPIOA
     #define W5500_clockPin GPIO_Pin_5
 
-    #define W5500_SPI SPI1
+    #define W5500_SPI 1
 #elif W5500Connection == 2 // FSCD, movesensors
     #define W5500_resetPort GPIOA
     #define W5500_resetPin GPIO_Pin_8
@@ -31,7 +31,7 @@
     #define W5500_clockPort GPIOB
     #define W5500_clockPin GPIO_Pin_13
 
-    #define W5500_SPI SPI2
+    #define W5500_SPI 2
 #endif
 
 #include "socket.c"
