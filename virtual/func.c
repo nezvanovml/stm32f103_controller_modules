@@ -144,7 +144,7 @@ void virtual_add_data_to_str(char *body){
 			strcat(body, temp);
 			if((i+1) == VIRTUAL_NUM_OF_BUTTON) body[strlen(body) - 1] = '\0';
         }
-	strcat(body, "],\"v_binary_sensor\":[");
+	strcat(body, "],\"v_sensor\":[");
 	for(uint8_t i = 0; i < VIRTUAL_NUM_OF_BINARY_SENSOR; i++){
 			char temp[5];
 			xsprintf(temp, "%d,", virtual_binary_sensor_get_state(i+1));
