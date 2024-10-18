@@ -61,58 +61,48 @@ int16_t get_int_from_str(char* str){
 }
 
 void collect_system_info(char *body){
-    xsprintf(body, "{\"device_index\":%d,\"version\":%d,\"up\":%ld,",device_index, MODULES_VERSION, seconds_since_start);
+    xsprintf(body, "{\"device_index\":%d,\"version\":%d,",device_index, MODULES_VERSION);
 
-    uint8_t modules = 0;
     #ifdef RelayConnection
     relay_add_info_to_str(body);
     strcat(body,",");
-    modules++;
 	#endif
 
 	#ifdef InputConnection
 	input_add_info_to_str(body);
     strcat(body,",");
-    modules++;
 	#endif
 
     #ifdef DS18B20Connection
 	ds18b20_add_info_to_str(body);
     strcat(body,",");
-    modules++;
 	#endif
 
     virtual_add_info_to_str(body);
-    modules++;
 
 
 	strcat(body,"}");
 }
 
 void collect_state(char *body){
-    strcat(body, "{");
+    xsprintf(body, "{\"up\":%ld,", seconds_since_start);
 
-    uint8_t modules = 0;
     #ifdef RelayConnection
 	relay_add_data_to_str(body);
     strcat(body,",");
-    modules++;
 	#endif
 
 	#ifdef InputConnection
 	input_add_data_to_str(body);
     strcat(body,",");
-    modules++;
 	#endif
 
     #ifdef DS18B20Connection
 	ds18b20_add_data_to_str(body);
     strcat(body,",");
-    modules++;
 	#endif
 
     virtual_add_data_to_str(body);
-    modules++;
 
 
 	strcat(body,"}");
