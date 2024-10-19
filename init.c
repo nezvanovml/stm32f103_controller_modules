@@ -80,6 +80,7 @@ void modules_init(){
     virtual_ini();
 
     // modules initialized
+    system_loaded = 1;
 	LEDBLINK(16);
     return;
 }

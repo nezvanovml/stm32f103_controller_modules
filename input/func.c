@@ -321,9 +321,9 @@ uint8_t input_binary_sensor_pressed(uint8_t sensor){
 /// @brief Returns mapped value from analog input
 /// @param input
 /// @return 0..100
-uint16_t input_analog_get_value(uint8_t input){
+uint8_t input_analog_get_value(uint8_t input){
 	if (input < 1 || input > INPUT_NUM_OF_ANALOG_INPUT) return 0;
-	return (uint16_t)(input_analog_ADC_buffer[input - 1] / 40.96);
+	return (uint8_t)(input_analog_ADC_buffer[input - 1] / 40.96);
 }
 
 /// @brief Appends input data
