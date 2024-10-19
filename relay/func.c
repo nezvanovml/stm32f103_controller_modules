@@ -179,6 +179,7 @@ void relay_int(){
 			if(relay_impulse[i] <= 1){
 				relay_target[i] = 0;
 				relay_impulse[i] = 0;
+				LEDOFF(i+1);
 			} else {
 				relay_impulse[i]--;
 			}
