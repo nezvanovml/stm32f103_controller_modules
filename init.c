@@ -1,4 +1,4 @@
-#define MODULES_VERSION 1
+#define MODULES_VERSION 2
 
 // Counting working time
 uint32_t seconds_since_start = 0; // Counts how seconds controller is online
@@ -40,6 +40,13 @@ void modules_init(){
     IWDG_Enable();
     #endif
 
+    #if DISABLE_JTAG == 1
+	delay_ms(5000);
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO, ENABLE);
+	GPIO_PinRemapConfig(GPIO_Remap_SWJ_Disable, ENABLE);
+	#endif
+
+
     #ifdef IOModuleConnection
     #include "modules/io_module/gpio.c"
     #endif
@@ -47,16 +54,9 @@ void modules_init(){
     #ifdef DEVICE_INDEX
     device_index = (uint8_t)DEVICE_INDEX;
     #else
-    delay_ms(1000); // needed for convert DIP switch to device_index
     device_index = io_module_get_device_index();
     #endif
     
-    #if DISABLE_JTAG == 1
-	delay_ms(5000);
-	RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO, ENABLE);
-	GPIO_PinRemapConfig(GPIO_Remap_SWJ_Disable, ENABLE);
-	#endif
-
     #ifdef RelayConnection
     #include "modules/relay/gpio.c"
     relay_ini();

@@ -132,12 +132,19 @@ uint8_t io_module_button_pressed(uint8_t button){
 /// @return index
 uint8_t io_module_get_device_index(){
 	uint8_t index = 0;
-	if(io_module_button_pressed(12)) index += 1;
-	if(io_module_button_pressed(11)) index += 2;
-	if(io_module_button_pressed(10)) index += 4;
-	if(io_module_button_pressed(9)) index += 8;
-	if(io_module_button_pressed(16)) index += 16;
-	if(io_module_button_pressed(15)) index += 32;
+	while(1){
+		if(io_module_button_pressed(12)) {index += 1; LEDON(1);}
+		if(io_module_button_pressed(11)) {index += 2; LEDON(2);}
+		if(io_module_button_pressed(10)) {index += 4; LEDON(3);}
+		if(io_module_button_pressed(9)) {index += 8; LEDON(4);}
+		if(io_module_button_pressed(16)) {index += 16; LEDON(5);}
+		if(io_module_button_pressed(15)) {index += 32; LEDON(6);}
+		if(index) break;
+	}
+	delay_ms(1000); // delay for show index
+	LEDOFF(1);LEDOFF(2);
+	LEDOFF(3);LEDOFF(4);
+	LEDOFF(5);LEDOFF(6);
 
 	return index;
 }
