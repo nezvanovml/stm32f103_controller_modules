@@ -43,14 +43,14 @@
 #include "W5500/w5500.c"
 
 #define DEFAULT_BUFFER_SIZE 768
-uint8_t HTTP_SOCKET = 2;
+#define NUM_OF_SOCKETS 4
 
 #ifdef W5500_NETWORK
 uint8_t	network[4] = {W5500_NETWORK};
 uint8_t	netmask[4] = {W5500_NETMASK};
 #else
 uint8_t dhcp_buffer[DEFAULT_BUFFER_SIZE];
-uint8_t DHCP_SOCKET = 0;
+uint8_t DHCP_SOCKET = 7;
 
 #endif
 
@@ -200,6 +200,7 @@ void w5500_int(){
 
 
 struct HttpRequest{
+	int8_t socket;
 	uint16_t status_code;
     char request[DEFAULT_BUFFER_SIZE];
 	char response[DEFAULT_BUFFER_SIZE];
@@ -351,6 +352,12 @@ int32_t http_server_process(uint8_t sn, uint16_t port, struct HttpRequest * http
          {
 			setSn_IR(sn,Sn_IR_CON);
          }
+		 // setting current socket as active
+		 if(http_request->socket < 0){
+			http_request->socket = sn;
+		 }
+		 if(http_request->socket != sn) break; // if current socket not active - breaks
+
 		 if((size = getSn_RX_RSR(sn)) > 0 && http_request->request[0] == '\0') // Don't need to check SOCKERR_BUSY because it doesn't not occur.
          {
 			if(size > DEFAULT_BUFFER_SIZE) size = DEFAULT_BUFFER_SIZE;
@@ -379,20 +386,22 @@ int32_t http_server_process(uint8_t sn, uint16_t port, struct HttpRequest * http
 			disconnect(sn);
 			http_request->response[0] = '\0';
 			http_request->request[0] = '\0';
+			http_request->socket = -1;
 			return HTTP_SENT;
 		 }
          
          break;
       case SOCK_CLOSE_WAIT :
+	  		if(http_request->socket == sn) http_request->socket = -1; // unselecting current socket as active
         	if((ret = disconnect(sn)) != SOCK_OK) return HTTP_ERROR;
-
          	break;
       case SOCK_INIT :
+	  		if(http_request->socket == sn) http_request->socket = -1; // unselecting current socket as active
          	if( (ret = listen(sn)) != SOCK_OK) return HTTP_ERROR;
          	break;
       case SOCK_CLOSED:
+	  		if(http_request->socket == sn) http_request->socket = -1; // unselecting current socket as active
 			if((ret = socket(sn, Sn_MR_TCP, port, 0x00)) != sn) return HTTP_ERROR;
-
 			break;
       default:
          	break;
