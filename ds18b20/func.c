@@ -171,7 +171,7 @@ int8_t get_fraction(float input){
 void temperature_to_str(float input, char* temp){
     // TODO: returns -0.0 if unavailable, target = null
     uint8_t integer_part = get_integer(input), fraction_part = get_fraction(input);
-    if(input < 0 && integer_part == 0 && fraction_part == 0){
+    if((input < 0 && integer_part == 0 && fraction_part == 0) || (integer_part == 85 && fraction_part == 0)){ // 1st variant - sensor not connected, 2nd cariant -  sensor just turned on, no temperature meaured
         xsprintf(temp, "null");
     } else if (input < 0){
         xsprintf(temp, "-%d.%d", integer_part, fraction_part);
