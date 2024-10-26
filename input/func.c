@@ -123,7 +123,40 @@ There are 4 types of input:
 #define AnalogInput_ch10_Port GPIOB
 #define AnalogInput_ch10_Pin GPIO_Pin_1
 #define AnalogInput_ch10_ADC_Channel ADC_Channel_9
+#elif InputConnection == 4 // sensors
+#define INPUT_NUM_OF_BINARY_SENSOR 6
 
+#define BinarySensor_ch1_Port GPIOB
+#define BinarySensor_ch1_Pin GPIO_Pin_5
+#define BinarySensor_ch1_Inverted 1
+#define BinarySensor_ch1_NeedPullDown 0
+
+#define BinarySensor_ch2_Port GPIOB
+#define BinarySensor_ch2_Pin GPIO_Pin_4
+#define BinarySensor_ch2_Inverted 1
+#define BinarySensor_ch2_NeedPullDown 0
+
+#define BinarySensor_ch3_Port GPIOB
+#define BinarySensor_ch3_Pin GPIO_Pin_3
+#define BinarySensor_ch3_Inverted 1
+#define BinarySensor_ch3_NeedPullDown 0
+
+#define BinarySensor_ch4_Port GPIOA
+#define BinarySensor_ch4_Pin GPIO_Pin_15
+#define BinarySensor_ch4_Inverted 1
+#define BinarySensor_ch4_NeedPullDown 0
+
+#define BinarySensor_ch5_Port GPIOA
+#define BinarySensor_ch5_Pin GPIO_Pin_12
+#define BinarySensor_ch5_Inverted 1
+#define BinarySensor_ch5_NeedPullDown 0
+
+#define BinarySensor_ch6_Port GPIOA
+#define BinarySensor_ch6_Pin GPIO_Pin_11
+#define BinarySensor_ch6_Inverted 1
+#define BinarySensor_ch6_NeedPullDown 0
+
+#define DISABLE_JTAG 1
 #endif
 
 #ifndef INPUT_NUM_OF_COUNTER
