@@ -15,7 +15,7 @@
 #define Relay_ch6_Pin GPIO_Pin_7
 #define Relay_ch7_Port GPIOB
 #define Relay_ch7_Pin GPIO_Pin_8
-#define Relay_ch8_Port GPIOA
+#define Relay_ch8_Port GPIOB
 #define Relay_ch8_Pin GPIO_Pin_9
 
 #define DISABLE_JTAG 1
