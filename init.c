@@ -1,4 +1,4 @@
-#define MODULES_VERSION 3
+#define MODULES_VERSION 4
 
 // Counting working time
 uint32_t seconds_since_start = 0; // Counts how seconds controller is online
