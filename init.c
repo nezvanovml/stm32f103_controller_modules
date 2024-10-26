@@ -9,116 +9,115 @@ uint16_t interruption_counter = 0;
 #include "Libraries/xprintf/xprintf.c"
 
 #ifdef IOModuleConnection
-	#include "modules/io_module/func.c"
+#include "modules/io_module/func.c"
 #endif
 
 #ifdef W5500Connection
-	#include "modules/w5500/func.c"
+#include "modules/w5500/func.c"
 #endif
 
 #ifdef DS18B20Connection
-	#include "modules/ds18b20/func.c"
+#include "modules/ds18b20/func.c"
 #endif
 
 #ifdef RelayConnection
-	#include "modules/relay/func.c"
+#include "modules/relay/func.c"
 #endif
 
 #ifdef InputConnection
-	#include "modules/input/func.c"
+#include "modules/input/func.c"
 #endif
 
 #include "modules/virtual/func.c"
 
+void modules_init()
+{
 
-void modules_init(){
-
-    #if USE_WATCHDOG == 1
+#if USE_WATCHDOG == 1
     IWDG_WriteAccessCmd(IWDG_Prescaler_4);
     IWDG_SetReload(0x0FFF);
     IWDG_ReloadCounter();
     IWDG_Enable();
-    #endif
+#endif
 
-    #if DISABLE_JTAG == 1
-	delay_ms(5000);
-	RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO, ENABLE);
-	GPIO_PinRemapConfig(GPIO_Remap_SWJ_Disable, ENABLE);
-	#endif
+#if DISABLE_JTAG == 1
+    delay_ms(5000);
+    RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO, ENABLE);
+    GPIO_PinRemapConfig(GPIO_Remap_SWJ_Disable, ENABLE);
+#endif
 
+#ifdef IOModuleConnection
+#include "modules/io_module/gpio.c"
+#endif
 
-    #ifdef IOModuleConnection
-    #include "modules/io_module/gpio.c"
-    #endif
-
-    #ifdef DEVICE_INDEX
+#ifdef DEVICE_INDEX
     device_index = (uint8_t)DEVICE_INDEX;
-    #else
+#else
     device_index = io_module_get_device_index();
-    #endif
-    
-    #ifdef RelayConnection
-    #include "modules/relay/gpio.c"
+#endif
+
+#ifdef RelayConnection
+#include "modules/relay/gpio.c"
     relay_ini();
-    #endif
+#endif
 
-    #ifdef W5500Connection
-    #include "modules/w5500/gpio.c"
+#ifdef W5500Connection
+#include "modules/w5500/gpio.c"
     w5500_ini();
-    #endif
+#endif
 
-    #ifdef DS18B20Connection
-    #include "modules/ds18b20/gpio.c"
+#ifdef DS18B20Connection
+#include "modules/ds18b20/gpio.c"
     ds18b20_ini();
-    #endif
+#endif
 
-    #ifdef InputConnection
-        #include "modules/input/gpio.c"
-        input_ini();
-    #endif
+#ifdef InputConnection
+#include "modules/input/gpio.c"
+    input_ini();
+#endif
 
     virtual_ini();
 
     // modules initialized
     system_loaded = 1;
-	LEDBLINK(16);
+    LEDBLINK(16);
     return;
 }
 
-
-
-void modules_interruptions(){
-    #if USE_WATCHDOG == 1
+void modules_interruptions()
+{
+#if USE_WATCHDOG == 1
     IWDG_ReloadCounter();
-    #endif
+#endif
 
     // Counting working time
     interruption_counter++;
-    if(interruption_counter >= 1000){
+    if (interruption_counter >= 1000)
+    {
         seconds_since_start++;
         interruption_counter = 0;
     }
     // End counting working time
-    
-    #ifdef IOModuleConnection
-	io_panel_int();
-	#endif
 
-	#ifdef W5500Connection
-	w5500_int();
-	#endif
+#ifdef IOModuleConnection
+    io_panel_int();
+#endif
 
-	#ifdef DS18B20Connection
-	ds18b20_int();
-	#endif
+#ifdef W5500Connection
+    w5500_int();
+#endif
 
-	#ifdef RelayConnection
-	relay_int();
-	#endif
+#ifdef DS18B20Connection
+    ds18b20_int();
+#endif
 
-	#ifdef InputConnection
-	input_int();
-	#endif	
+#ifdef RelayConnection
+    relay_int();
+#endif
+
+#ifdef InputConnection
+    input_int();
+#endif
 
     virtual_int();
 
