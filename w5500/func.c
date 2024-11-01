@@ -43,6 +43,8 @@
 #include "W5500/w5500.c"
 
 #define DEFAULT_BUFFER_SIZE 768
+// Number of sockets used for listen requests
+#define SOCKET_NUM 6
 
 #ifdef W5500_NETWORK
 uint8_t network[4] = {W5500_NETWORK};
@@ -453,14 +455,20 @@ int32_t http_server_process(uint8_t sn, uint16_t port, struct HttpRequest *http_
 
 		break;
 	case SOCK_CLOSE_WAIT:
+		http_request->response[0] = '\0';
+		http_request->request[0] = '\0';
 		if ((ret = disconnect(sn)) != SOCK_OK)
 			return HTTP_ERROR;
 		break;
 	case SOCK_INIT:
+		http_request->response[0] = '\0';
+		http_request->request[0] = '\0';
 		if ((ret = listen(sn)) != SOCK_OK)
 			return HTTP_ERROR;
 		break;
 	case SOCK_CLOSED:
+		http_request->response[0] = '\0';
+		http_request->request[0] = '\0';
 		if ((ret = socket(sn, Sn_MR_TCP, port, 0x00)) != sn)
 			return HTTP_ERROR;
 		break;
