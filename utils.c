@@ -82,6 +82,18 @@ int16_t get_int_from_str(char *str)
     return result;
 }
 
+void bit_set(uint16_t *number, uint8_t n) {
+    *number = *number | ((uint16_t)1 << n);
+}
+
+void bit_clear(uint16_t *number, uint8_t n) {
+    *number = *number & ~((uint16_t)1 << n);
+}
+
+uint8_t bit_check(uint16_t *number, uint8_t n) {
+    return (*number >> n) & (uint16_t)1;
+}
+
 void collect_system_info(char *body)
 {
     xsprintf(body, "{\"device_index\":%d,\"version\":%d,", device_index, MODULES_VERSION);

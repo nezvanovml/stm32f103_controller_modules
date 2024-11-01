@@ -1,6 +1,6 @@
 /*
 There are 4 types of input:
-* Button (0/1) - simple button or state (on/off). Maximum: 8. By default pulled-up to +3.3v
+* Button (0/1) - simple button with two possible press: short/long. Maximum: 8. By default pulled-up to +3.3v
 * Counter - counts times state of input changed. Can be used for power/water meters etc. Maximum: 4
 * Binary_Sensor (0/1) - simple state (on/off). Maximum: 8. By default pulled-up to +3.3v
 * Analog_input (0..100) ADC. Maximum: 10.
@@ -175,7 +175,16 @@ There are 4 types of input:
 #define INPUT_NUM_OF_ANALOG_INPUT 0
 #endif
 
-uint8_t input_button_state[INPUT_NUM_OF_BUTTON], input_button_released[INPUT_NUM_OF_BUTTON];
+#ifndef INPUT_BUTTON_SHORT_LONG_THRESHOLD
+#define INPUT_BUTTON_SHORT_LONG_THRESHOLD 1000
+#endif
+
+// Button
+uint16_t input_button_pressed_ms[INPUT_NUM_OF_BUTTON];
+uint8_t input_button_state[INPUT_NUM_OF_BUTTON], input_button_released[INPUT_NUM_OF_BUTTON]; 
+uint8_t input_button_short_mcu[INPUT_NUM_OF_BUTTON], input_button_long_mcu[INPUT_NUM_OF_BUTTON], input_button_short_web[INPUT_NUM_OF_BUTTON], input_button_long_web[INPUT_NUM_OF_BUTTON]; // indicators for button press
+
+// Binary sensor
 uint8_t input_binary_sensor_state[INPUT_NUM_OF_BINARY_SENSOR], input_binary_sensor_released[INPUT_NUM_OF_BINARY_SENSOR];
 
 uint8_t input_counter_state[INPUT_NUM_OF_COUNTER], input_counter_released[INPUT_NUM_OF_COUNTER];
@@ -229,17 +238,35 @@ void input_int()
 
 	for (uint8_t i = 0; i < INPUT_NUM_OF_BUTTON; i++)
 	{
-		if (input_button_state[i] == 0xFF)
+		if (input_button_state[i] == 0xFF) // Кнопка нажата
 		{
-			if (input_button_released[i] == 1)
+			if (input_button_released[i] == 1) // первый такт нажатия
 			{
 				input_button_released[i] = 0;
-			}
+				input_button_pressed_ms[i] = 0;
+			} 
+				
+			if(input_button_pressed_ms[i] < INPUT_BUTTON_SHORT_LONG_THRESHOLD) input_button_pressed_ms[i]++; // Больше INPUT_BUTTON_SHORT_LONG_THRESHOLD -> длительное нажатие
+			
 		}
-		else
+		else // Кнопка отпущена
 		{
 			input_button_released[i] = 1;
 		}
+
+
+		if (input_button_released[i] && input_button_pressed_ms[i] > 0 && input_button_pressed_ms[i] < INPUT_BUTTON_SHORT_LONG_THRESHOLD)
+			{
+				input_button_short_mcu[i] = 1;
+				input_button_short_web[i] = 1;
+			}
+		if (input_button_released[i] && input_button_pressed_ms[i] > 0 && input_button_pressed_ms[i] >= INPUT_BUTTON_SHORT_LONG_THRESHOLD)
+			{
+				input_button_long_mcu[i] = 1;
+				input_button_long_web[i] = 1;
+			}
+		
+		if (input_button_released[i]) input_button_pressed_ms[i] = 0;
 	}
 
 #ifdef Counter_ch1_Port
@@ -341,8 +368,13 @@ void input_ini()
 {
 	for (uint8_t i; i < INPUT_NUM_OF_BUTTON; i++)
 	{
+		input_button_pressed_ms[i] = 0;
 		input_button_state[i] = 0;
 		input_button_released[i] = 0;
+		input_button_short_mcu[i] = 0;
+		input_button_long_mcu[i] = 0;
+		input_button_short_web[i] = 0;
+		input_button_long_web[i] = 0;
 	}
 	for (uint8_t i; i < INPUT_NUM_OF_COUNTER; i++)
 	{
@@ -353,20 +385,56 @@ void input_ini()
 	}
 }
 
-/// @brief Returns 1 if button pressed at this moment.
+/// @brief Returns 1 if button short-pressed. Resets pressed flag for MCU
 /// @param button
 /// @return 1 / 0
-uint8_t input_button_pressed(uint8_t button)
+uint8_t input_button_pressed_short(uint8_t button)
 {
 	if (button < 1 || button > INPUT_NUM_OF_BUTTON)
 		return 0;
-	if (input_button_state[button - 1] == 0xFF)
-	{
-		return 1;
-	}
-	else
-		return 0;
+
+	uint8_t temp = input_button_short_mcu[button - 1];
+	input_button_short_mcu[button - 1] = 0;
+	return temp;
 }
+
+/// @brief Returns 1 if button long-pressed. Resets pressed flag for MCU
+/// @param button
+/// @return 1 / 0
+uint8_t input_button_pressed_long(uint8_t button)
+{
+	if (button < 1 || button > INPUT_NUM_OF_BUTTON)
+		return 0;
+	uint8_t temp = input_button_long_mcu[button - 1];
+	input_button_long_mcu[button - 1] = 0;
+	return temp;
+}
+
+/// @brief Returns 1 if button short-pressed. Resets pressed flag for WEB
+/// @param button
+/// @return 1 / 0
+uint8_t input_button_pressed_short_web(uint8_t button)
+{
+	if (button < 1 || button > INPUT_NUM_OF_BUTTON)
+		return 0;
+
+	uint8_t temp = input_button_short_web[button - 1];
+	input_button_short_web[button - 1] = 0;
+	return temp;
+}
+
+/// @brief Returns 1 if button long-pressed. Resets pressed flag for WEB
+/// @param button
+/// @return 1 / 0
+uint8_t input_button_pressed_long_web(uint8_t button)
+{
+	if (button < 1 || button > INPUT_NUM_OF_BUTTON)
+		return 0;
+	uint8_t temp = input_button_long_web[button - 1];
+	input_button_long_web[button - 1] = 0;
+	return temp;
+}
+
 
 /// @brief Returns how many ticks got from input.
 /// @param counter
@@ -420,9 +488,17 @@ void input_add_data_to_str(char *body)
 	strcat(body, "\"button\":[");
 	for (uint8_t i = 0; i < INPUT_NUM_OF_BUTTON; i++)
 	{
-
 		char temp[5];
-		xsprintf(temp, "%d,", input_button_pressed(i + 1));
+		xsprintf(temp, "%d,", input_button_pressed_short_web(i + 1));
+		strcat(body, temp);
+		if ((i + 1) == INPUT_NUM_OF_BUTTON)
+			body[strlen(body) - 1] = '\0';
+	}
+	strcat(body, "], \"button_long\":[");
+	for (uint8_t i = 0; i < INPUT_NUM_OF_BUTTON; i++)
+	{
+		char temp[5];
+		xsprintf(temp, "%d,", input_button_pressed_long_web(i + 1));
 		strcat(body, temp);
 		if ((i + 1) == INPUT_NUM_OF_BUTTON)
 			body[strlen(body) - 1] = '\0';
