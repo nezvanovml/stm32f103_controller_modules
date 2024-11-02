@@ -14,6 +14,8 @@
 #define DS18B20_NEED_SCAN 1
 #endif
 
+float bytes_to_temp(uint8_t, uint8_t);
+
 uint8_t ds18b20_ids[DS18B20_MAX_DEVICES][8];
 uint8_t ds18b20_search_finished = 0;
 uint8_t ds18b20_total_sensors = 0;
@@ -22,6 +24,8 @@ uint8_t LastDeviceFlag;
 uint8_t LastDiscrepancy;
 uint8_t LastFamilyDiscrepancy;
 
+float ds18b20_temperature[DS18B20_MAX_DEVICES];
+
 // default period between measures (seconds)
 #ifndef DS18B20Period
 #define DS18B20Period 30
@@ -29,23 +33,30 @@ uint8_t LastFamilyDiscrepancy;
 
 uint16_t ds18b20_timer = 0;
 
-/// @brief Interruptions, called every millisecond
-void ds18b20_int()
-{
-    ds18b20_timer++;
-    if (ds18b20_timer >= DS18B20Period * 1000)
-    {
-        // run converting temperature on sensors
-        ds18b20_StartMeasure();
-        ds18b20_timer = 0;
-    }
-}
-
 static uint8_t Scratchpad[8]; // буфер с результатами
 // Scratchpad[0] - младший байт температуры, [1] - старший.
 
 static __INLINE void D0() { GPIO_ResetBits(DS18B20_dataPort, DS18B20_dataPin); }
 static __INLINE void D1() { GPIO_SetBits(DS18B20_dataPort, DS18B20_dataPin); }
+
+/// @brief Interruptions, called every millisecond
+void ds18b20_int()
+{
+    
+    if (ds18b20_timer == DS18B20Period * 1000){
+        // run converting temperature on sensors
+        ds18b20_StartMeasure();
+    } else if (ds18b20_timer >= (DS18B20Period * 1000 + 1500)){
+        for (uint8_t i = 0; i < ds18b20_total_sensors; i++) {
+            ds18b20_ReadStratcpadAddr(2, ds18b20_ids[i]);
+            ds18b20_temperature[i] =  bytes_to_temp(Scratchpad[1], Scratchpad[0]);
+        }
+        ds18b20_timer = 0;
+    }
+    ds18b20_timer++;
+}
+
+
 
 /// @brief Send reset command to 1Wire
 /// @param
@@ -299,6 +310,9 @@ uint8_t ds18b20_search_rom(uint8_t *Addr)
 /// @brief Initialization of module ds18b20. Insert before main loop.
 void ds18b20_ini()
 {
+    for(uint8_t i = 0; i < DS18B20_MAX_DEVICES; i++){
+        ds18b20_temperature[i] = 0.0;
+    }
     if (DS18B20_NEED_SCAN)
     {
         if (!ds18b20_search_finished)
@@ -318,6 +332,8 @@ void ds18b20_ini()
             ds18b20_search_finished = 1;
         }
     }
+    // Set timer to force measure
+    ds18b20_timer = DS18B20Period * 1000;
 }
 
 /// @brief Get temperature on sensor by index. Example: ds18b20_get_temperature_by_index(1)
@@ -328,8 +344,7 @@ float ds18b20_get_temperature_by_index(uint8_t id)
     float temp = -100.0;
     if (id > ds18b20_total_sensors)
         return temp;
-    ds18b20_ReadStratcpadAddr(2, ds18b20_ids[id - 1]); //
-    return bytes_to_temp(Scratchpad[1], Scratchpad[0]);
+    return ds18b20_temperature[id - 1];
 }
 
 /// @brief Get temperature on sensor by address. Example: ds18b20_get_temperature_by_address((uint8_t[]){0x28,0x48,0xE8,0x43,0xD4,0xE1,0x3C,0x6D})
@@ -337,9 +352,11 @@ float ds18b20_get_temperature_by_index(uint8_t id)
 /// @return float, if error ocured returns -100.0
 float ds18b20_get_temperature_by_address(uint8_t id[8])
 {
-    float temp = -100.0;
-    ds18b20_ReadStratcpadAddr(2, id);
-    return bytes_to_temp(Scratchpad[1], Scratchpad[0]);
+    for(uint8_t i = 0; i < DS18B20_MAX_DEVICES; i++){
+        if(ds18b20_ids[i][0] == id[0] && ds18b20_ids[i][1] == id[1] && ds18b20_ids[i][2] == id[2] && ds18b20_ids[i][3] == id[3] && ds18b20_ids[i][4] == id[4] && ds18b20_ids[i][5] == id[5] && ds18b20_ids[i][6] == id[6] && ds18b20_ids[i][7] == id[7]) return ds18b20_temperature[i];
+    }
+    // if address not found return FAIL_TEMPERATURE
+    return -100.0;
 }
 
 /// @brief Appends temperature sensors data
@@ -350,7 +367,7 @@ void ds18b20_add_data_to_str(char *body)
     for (uint8_t i = 0; i < ds18b20_total_sensors; i++)
     {
         char tmp[7];
-        temperature_to_str(ds18b20_get_temperature_by_index(i + 1), tmp);
+        temperature_to_str(ds18b20_temperature[i], tmp);
         char temp[25];
         xsprintf(temp, "\"%02X%02X%02X%02X%02X%02X%02X%02X\":%s,",
                  ds18b20_ids[i][0], ds18b20_ids[i][1], ds18b20_ids[i][2], ds18b20_ids[i][3], ds18b20_ids[i][4], ds18b20_ids[i][5], ds18b20_ids[i][6], ds18b20_ids[i][7], tmp);
