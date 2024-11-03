@@ -7,7 +7,6 @@ Init_PORT.GPIO_Mode = GPIO_Mode_IPD;
 Init_PORT.GPIO_Mode = GPIO_Mode_IPU;
 #endif
 GPIO_Init(Button_ch1_Port, &Init_PORT);
-GPIO_ResetBits(Button_ch1_Port, Button_ch1_Pin);
 #endif
 
 #ifdef Button_ch2_Port
@@ -19,7 +18,6 @@ Init_PORT.GPIO_Mode = GPIO_Mode_IPD;
 Init_PORT.GPIO_Mode = GPIO_Mode_IPU;
 #endif
 GPIO_Init(Button_ch2_Port, &Init_PORT);
-GPIO_ResetBits(Button_ch2_Port, Button_ch2_Pin);
 #endif
 
 #ifdef Button_ch3_Port
@@ -31,7 +29,6 @@ Init_PORT.GPIO_Mode = GPIO_Mode_IPD;
 Init_PORT.GPIO_Mode = GPIO_Mode_IPU;
 #endif
 GPIO_Init(Button_ch3_Port, &Init_PORT);
-GPIO_ResetBits(Button_ch3_Port, Button_ch3_Pin);
 #endif
 
 #ifdef Button_ch4_Port
@@ -43,7 +40,6 @@ Init_PORT.GPIO_Mode = GPIO_Mode_IPD;
 Init_PORT.GPIO_Mode = GPIO_Mode_IPU;
 #endif
 GPIO_Init(Button_ch4_Port, &Init_PORT);
-GPIO_ResetBits(Button_ch4_Port, Button_ch4_Pin);
 #endif
 
 #ifdef Button_ch5_Port
@@ -55,7 +51,6 @@ Init_PORT.GPIO_Mode = GPIO_Mode_IPD;
 Init_PORT.GPIO_Mode = GPIO_Mode_IPU;
 #endif
 GPIO_Init(Button_ch5_Port, &Init_PORT);
-GPIO_ResetBits(Button_ch5_Port, Button_ch5_Pin);
 #endif
 
 #ifdef Button_ch6_Port
@@ -67,7 +62,6 @@ Init_PORT.GPIO_Mode = GPIO_Mode_IPD;
 Init_PORT.GPIO_Mode = GPIO_Mode_IPU;
 #endif
 GPIO_Init(Button_ch6_Port, &Init_PORT);
-GPIO_ResetBits(Button_ch6_Port, Button_ch6_Pin);
 #endif
 
 #ifdef Button_ch7_Port
@@ -79,7 +73,6 @@ Init_PORT.GPIO_Mode = GPIO_Mode_IPD;
 Init_PORT.GPIO_Mode = GPIO_Mode_IPU;
 #endif
 GPIO_Init(Button_ch7_Port, &Init_PORT);
-GPIO_ResetBits(Button_ch7_Port, Button_ch7_Pin);
 #endif
 
 #ifdef Button_ch8_Port
@@ -91,7 +84,6 @@ Init_PORT.GPIO_Mode = GPIO_Mode_IPD;
 Init_PORT.GPIO_Mode = GPIO_Mode_IPU;
 #endif
 GPIO_Init(Button_ch8_Port, &Init_PORT);
-GPIO_ResetBits(Button_ch8_Port, Button_ch8_Pin);
 #endif
 
 

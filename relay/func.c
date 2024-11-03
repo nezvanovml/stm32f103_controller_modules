@@ -39,22 +39,23 @@
 #elif RelayConnection == 3 // lights
 #define RELAY_NUM_OF_CHANNELS 8
 
-#define Relay_ch1_Port GPIOC
-#define Relay_ch1_Pin GPIO_Pin_13
-#define Relay_ch2_Port GPIOC
-#define Relay_ch2_Pin GPIO_Pin_14
-#define Relay_ch3_Port GPIOC
-#define Relay_ch3_Pin GPIO_Pin_15
+#define Relay_ch1_Port GPIOB
+#define Relay_ch1_Pin GPIO_Pin_1
+#define Relay_ch2_Port GPIOB
+#define Relay_ch2_Pin GPIO_Pin_0
+#define Relay_ch3_Port GPIOA
+#define Relay_ch3_Pin GPIO_Pin_2
 #define Relay_ch4_Port GPIOA
-#define Relay_ch4_Pin GPIO_Pin_0
+#define Relay_ch4_Pin GPIO_Pin_1
 #define Relay_ch5_Port GPIOA
-#define Relay_ch5_Pin GPIO_Pin_1
-#define Relay_ch6_Port GPIOA
-#define Relay_ch6_Pin GPIO_Pin_2
-#define Relay_ch7_Port GPIOB
-#define Relay_ch7_Pin GPIO_Pin_0
-#define Relay_ch8_Port GPIOB
-#define Relay_ch8_Pin GPIO_Pin_1
+#define Relay_ch5_Pin GPIO_Pin_0
+#define Relay_ch6_Port GPIOC
+#define Relay_ch6_Pin GPIO_Pin_15
+#define Relay_ch7_Port GPIOC
+#define Relay_ch7_Pin GPIO_Pin_14
+#define Relay_ch8_Port GPIOC
+#define Relay_ch8_Pin GPIO_Pin_13
+
 #elif RelayConnection == 4 // access, watering
 #define RELAY_NUM_OF_CHANNELS 5
 
