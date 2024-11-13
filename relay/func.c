@@ -38,6 +38,7 @@
 
 #elif RelayConnection == 3 // lights
 #define RELAY_NUM_OF_CHANNELS 8
+#define RELAY_AS_LIGHT 1
 
 #define Relay_ch1_Port GPIOB
 #define Relay_ch1_Pin GPIO_Pin_1
@@ -331,7 +332,11 @@ uint8_t relay_get_state(uint8_t relay)
 /// @param body string where to append input data
 void relay_add_data_to_str(char *body)
 {
+	#ifndef RELAY_AS_LIGHT
 	strcat(body, "\"relay\":[");
+	#else
+	strcat(body, "\"light\":[");
+	#endif
 	for (uint8_t i = 0; i < RELAY_NUM_OF_CHANNELS; i++)
 	{
 		char temp[5];
@@ -348,6 +353,10 @@ void relay_add_data_to_str(char *body)
 void relay_add_info_to_str(char *body)
 {
 	char temp[20];
+	#ifndef RELAY_AS_LIGHT
 	xsprintf(temp, "\"relay\":%d", RELAY_NUM_OF_CHANNELS);
+	#else
+	xsprintf(temp, "\"light\":%d", RELAY_NUM_OF_CHANNELS);
+	#endif
 	strcat(body, temp);
 }
