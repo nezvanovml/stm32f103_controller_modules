@@ -15,7 +15,7 @@
 #endif
 
 uint8_t virtual_switch_state[VIRTUAL_NUM_OF_SWITCH], virtual_button_state[VIRTUAL_NUM_OF_BUTTON], virtual_binary_sensor_state[VIRTUAL_NUM_OF_BINARY_SENSOR];
-int16_t virtual_numeric[VIRTUAL_NUM_OF_NUMERIC];
+int16_t virtual_numeric[VIRTUAL_NUM_OF_NUMERIC], virtual_numeric_min[VIRTUAL_NUM_OF_NUMERIC], virtual_numeric_max[VIRTUAL_NUM_OF_NUMERIC];
 
 /// @brief Interruptions, called every millisecond
 void virtual_int()
@@ -41,7 +41,90 @@ void virtual_ini()
 	for (uint8_t i = 0; i < VIRTUAL_NUM_OF_NUMERIC; i++)
 	{
 		virtual_numeric[i] = 0;
+		virtual_numeric_min[i] = 0;
+		virtual_numeric_max[i] = 100;
 	}
+
+	/* Set min/max for numeric */
+	#ifdef VIRTUAL_NUMERIC_MIN_1
+	virtual_numeric_min[0] = VIRTUAL_NUMERIC_MIN_1;
+	#endif
+
+	#ifdef VIRTUAL_NUMERIC_MAX_1
+	virtual_numeric_max[0] = VIRTUAL_NUMERIC_MAX_1;
+	#endif
+
+	#ifdef VIRTUAL_NUMERIC_MIN_2
+	virtual_numeric_min[1] = VIRTUAL_NUMERIC_MIN_2;
+	#endif
+
+	#ifdef VIRTUAL_NUMERIC_MAX_2
+	virtual_numeric_max[1] = VIRTUAL_NUMERIC_MAX_2;
+	#endif
+
+	#ifdef VIRTUAL_NUMERIC_MIN_3
+	virtual_numeric_min[2] = VIRTUAL_NUMERIC_MIN_3;
+	#endif
+
+	#ifdef VIRTUAL_NUMERIC_MAX_3
+	virtual_numeric_max[2] = VIRTUAL_NUMERIC_MAX_3;
+	#endif
+
+	#ifdef VIRTUAL_NUMERIC_MIN_4
+	virtual_numeric_min[3] = VIRTUAL_NUMERIC_MIN_4;
+	#endif
+
+	#ifdef VIRTUAL_NUMERIC_MAX_4
+	virtual_numeric_max[3] = VIRTUAL_NUMERIC_MAX_4;
+	#endif
+
+	#ifdef VIRTUAL_NUMERIC_MIN_5
+	virtual_numeric_min[4] = VIRTUAL_NUMERIC_MIN_5;
+	#endif
+
+	#ifdef VIRTUAL_NUMERIC_MAX_5
+	virtual_numeric_max[4] = VIRTUAL_NUMERIC_MAX_5;
+	#endif
+
+	#ifdef VIRTUAL_NUMERIC_MIN_6
+	virtual_numeric_min[5] = VIRTUAL_NUMERIC_MIN_6;
+	#endif
+
+	#ifdef VIRTUAL_NUMERIC_MAX_6
+	virtual_numeric_max[5] = VIRTUAL_NUMERIC_MAX_6;
+	#endif
+
+	#ifdef VIRTUAL_NUMERIC_MIN_7
+	virtual_numeric_min[6] = VIRTUAL_NUMERIC_MIN_7;
+	#endif
+
+	#ifdef VIRTUAL_NUMERIC_MAX_7
+	virtual_numeric_max[6] = VIRTUAL_NUMERIC_MAX_7;
+	#endif
+
+	#ifdef VIRTUAL_NUMERIC_MIN_8
+	virtual_numeric_min[7] = VIRTUAL_NUMERIC_MIN_8;
+	#endif
+
+	#ifdef VIRTUAL_NUMERIC_MAX_8
+	virtual_numeric_max[7] = VIRTUAL_NUMERIC_MAX_8;
+	#endif
+
+	#ifdef VIRTUAL_NUMERIC_MIN_9
+	virtual_numeric_min[8] = VIRTUAL_NUMERIC_MIN_9;
+	#endif
+
+	#ifdef VIRTUAL_NUMERIC_MAX_9
+	virtual_numeric_max[8] = VIRTUAL_NUMERIC_MAX_9;
+	#endif
+
+	#ifdef VIRTUAL_NUMERIC_MIN_10
+	virtual_numeric_min[9] = VIRTUAL_NUMERIC_MIN_10;
+	#endif
+
+	#ifdef VIRTUAL_NUMERIC_MAX_10
+	virtual_numeric_max[9] = VIRTUAL_NUMERIC_MAX_10;
+	#endif
 }
 
 /// @brief Turns virtual_switch ON
@@ -152,6 +235,8 @@ void virtual_numeric_set_value(uint8_t index, int16_t value)
 {
 	if (index < 1 || index > VIRTUAL_NUM_OF_NUMERIC)
 		return;
+	if (value > virtual_numeric_max[index - 1] || value < virtual_numeric_min[index - 1]) 
+		return;
 	virtual_numeric[index - 1] = value;
 }
 
@@ -211,7 +296,23 @@ void virtual_add_data_to_str(char *body)
 /// @param body string where to append input data
 void virtual_add_info_to_str(char *body)
 {
-	char temp[100];
-	xsprintf(temp, "\"v_switch\":%d,\"v_button\":%d,\"v_binary_sensor\":%d,\"v_numeric\":%d", VIRTUAL_NUM_OF_SWITCH, VIRTUAL_NUM_OF_BUTTON, VIRTUAL_NUM_OF_BINARY_SENSOR, VIRTUAL_NUM_OF_NUMERIC);
+	char temp[150];
+	xsprintf(temp, "\"v_switch\":%d,\"v_button\":%d,\"v_binary_sensor\":%d,\"v_numeric\":%d, \"v_numeric_min\":[", VIRTUAL_NUM_OF_SWITCH, VIRTUAL_NUM_OF_BUTTON, VIRTUAL_NUM_OF_BINARY_SENSOR, VIRTUAL_NUM_OF_NUMERIC);
 	strcat(body, temp);
+	for (uint8_t i = 0; i < VIRTUAL_NUM_OF_NUMERIC; i++)
+	{
+		xsprintf(temp, "%d,", virtual_numeric_min[i]);
+		strcat(body, temp);
+		if ((i + 1) == VIRTUAL_NUM_OF_NUMERIC)
+			body[strlen(body) - 1] = '\0';
+	}
+	strcat(body, "], \"v_numeric_max\":[");
+	for (uint8_t i = 0; i < VIRTUAL_NUM_OF_NUMERIC; i++)
+	{
+		xsprintf(temp, "%d,", virtual_numeric_max[i]);
+		strcat(body, temp);
+		if ((i + 1) == VIRTUAL_NUM_OF_NUMERIC)
+			body[strlen(body) - 1] = '\0';
+	}
+	strcat(body, "]");
 }

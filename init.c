@@ -1,4 +1,17 @@
-#define MODULES_VERSION 7
+#define MODULES_VERSION 8
+
+/*
+
+Version 1: First version 
+Version 2: Fixed bug when device_index does not complete.
+Version 3: Multi-socket server
+Version 4: Critical fix for connection pins
+Version 5: Added short/long differentiation for input button
+Version 6: Added caching for temperature data. Now it read data from sensors one time after converting and store in array.
+Version 7: Added posibility to expose relay as light
+Version 8: Added value diapason for virtual_numeric
+
+*/
 
 // Counting working time
 uint32_t seconds_since_start = 0; // Counts how seconds controller is online
