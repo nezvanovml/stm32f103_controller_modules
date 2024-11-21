@@ -203,6 +203,41 @@ There are 4 types of input:
 
 #define DISABLE_JTAG 1
 
+#elif InputConnection == 6 // ventilation
+#define INPUT_NUM_OF_BUTTON 6
+
+#define Button_ch1_Port GPIOB
+#define Button_ch1_Pin GPIO_Pin_5
+#define Button_ch1_Inverted 1
+#define Button_ch1_NeedPullDown 0
+
+#define Button_ch2_Port GPIOB
+#define Button_ch2_Pin GPIO_Pin_4
+#define Button_ch2_Inverted 1
+#define Button_ch2_NeedPullDown 0
+
+#define Button_ch3_Port GPIOB
+#define Button_ch3_Pin GPIO_Pin_3
+#define Button_ch3_Inverted 1
+#define Button_ch3_NeedPullDown 0
+
+#define Button_ch4_Port GPIOA
+#define Button_ch4_Pin GPIO_Pin_15
+#define Button_ch4_Inverted 1
+#define Button_ch4_NeedPullDown 0
+
+#define Button_ch5_Port GPIOA
+#define Button_ch5_Pin GPIO_Pin_12
+#define Button_ch5_Inverted 1
+#define Button_ch5_NeedPullDown 0
+
+#define Button_ch6_Port GPIOA
+#define Button_ch6_Pin GPIO_Pin_11
+#define Button_ch6_Inverted 1
+#define Button_ch6_NeedPullDown 0
+
+#define DISABLE_JTAG 1
+
 #endif
 
 #ifndef INPUT_NUM_OF_COUNTER
