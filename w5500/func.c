@@ -58,7 +58,7 @@ uint8_t DHCP_SOCKET = 7;
 wiz_NetInfo net_info;
 
 uint16_t w5500_timer = 0;
-uint16_t w5500_port_number = 0;
+uint16_t seconds_without_connection = 0; // Counts how many seconds without http request from server
 
 void SPIReadWrite(uint8_t data)
 {
@@ -213,6 +213,7 @@ void w5500_int()
 #ifndef W5500_NETWORK
 		DHCP_time_handler();
 #endif
+		seconds_without_connection++;
 		// resetting timer
 		w5500_timer = 0;
 	}
@@ -402,9 +403,10 @@ int32_t http_server_process(uint8_t sn, uint16_t port, struct HttpRequest *http_
 	char buf[DEFAULT_BUFFER_SIZE];
 
 	// If no physical link - re-init W5500
-	if (wizphy_getphylink() != PHY_LINK_ON)
+	if (wizphy_getphylink() != PHY_LINK_ON || seconds_without_connection > 15)
 	{
 		w5500_ini();
+		seconds_without_connection = 0;
 	}
 
 	switch (getSn_SR(sn))

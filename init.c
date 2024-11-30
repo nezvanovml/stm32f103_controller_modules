@@ -1,4 +1,4 @@
-#define MODULES_VERSION 8
+#define MODULES_VERSION 9
 
 /*
 
@@ -10,11 +10,13 @@ Version 5: Added short/long differentiation for input button
 Version 6: Added caching for temperature data. Now it read data from sensors one time after converting and store in array.
 Version 7: Added posibility to expose relay as light
 Version 8: Added value diapason for virtual_numeric
+Version 9: Added auto re-init w5500 module if no any connections more then 15 seconds
+
 
 */
 
 // Counting working time
-uint32_t seconds_since_start = 0; // Counts how seconds controller is online
+uint32_t seconds_since_start = 0; // Counts how many seconds controller is online
 uint16_t interruption_counter = 0;
 // End counting working time
 
