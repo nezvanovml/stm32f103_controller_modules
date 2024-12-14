@@ -1,4 +1,4 @@
-#define MODULES_VERSION 9
+#define MODULES_VERSION 10
 
 /*
 
@@ -11,7 +11,7 @@ Version 6: Added caching for temperature data. Now it read data from sensors one
 Version 7: Added posibility to expose relay as light
 Version 8: Added value diapason for virtual_numeric
 Version 9: Added auto re-init w5500 module if no any connections more then 15 seconds
-
+Version 10: Added auto reboot MCU if no any connections more then 30*5 (150) seconds
 
 */
 

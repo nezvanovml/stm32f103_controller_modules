@@ -34,6 +34,10 @@
 #define W5500_SPI 2
 #endif
 
+#ifndef W5500_RESET_MCU_IF_NO_CONNECTION
+#define W5500_RESET_MCU_IF_NO_CONNECTION 0
+#endif
+
 #include "socket.c"
 #include "socket.h"
 #include "DHCP/dhcp.c"
@@ -58,7 +62,10 @@ uint8_t DHCP_SOCKET = 7;
 wiz_NetInfo net_info;
 
 uint16_t w5500_timer = 0;
-uint16_t seconds_without_connection = 0; // Counts how many seconds without http request from server
+uint16_t w5500_seconds_without_connection = 0; // Counts how many seconds without http request from server
+#if W5500_RESET_MCU_IF_NO_CONNECTION == 1
+uint8_t w5500_without_connection_reset = 0; // Counts how many times W5500 was rebooted
+#endif
 
 void SPIReadWrite(uint8_t data)
 {
@@ -213,10 +220,13 @@ void w5500_int()
 #ifndef W5500_NETWORK
 		DHCP_time_handler();
 #endif
-		seconds_without_connection++;
+		w5500_seconds_without_connection++;
 		// resetting timer
 		w5500_timer = 0;
 	}
+	#if W5500_RESET_MCU_IF_NO_CONNECTION == 1
+	if(w5500_without_connection_reset >= 5) NVIC_SystemReset(); // Reset MCU
+	#endif
 }
 
 // SERVER MODE
@@ -403,10 +413,13 @@ int32_t http_server_process(uint8_t sn, uint16_t port, struct HttpRequest *http_
 	char buf[DEFAULT_BUFFER_SIZE];
 
 	// If no physical link - re-init W5500
-	if (wizphy_getphylink() != PHY_LINK_ON || seconds_without_connection > 15)
+	if (wizphy_getphylink() != PHY_LINK_ON || w5500_seconds_without_connection > 30)
 	{
 		w5500_ini();
-		seconds_without_connection = 0;
+		w5500_seconds_without_connection = 0;
+		#if W5500_RESET_MCU_IF_NO_CONNECTION == 1
+		w5500_without_connection_reset++;
+		#endif
 	}
 
 	switch (getSn_SR(sn))
@@ -452,6 +465,10 @@ int32_t http_server_process(uint8_t sn, uint16_t port, struct HttpRequest *http_
 			disconnect(sn);
 			http_request->response[0] = '\0';
 			http_request->request[0] = '\0';
+			w5500_seconds_without_connection = 0;
+			#if W5500_RESET_MCU_IF_NO_CONNECTION == 1
+			w5500_without_connection_reset = 0;
+			#endif
 			return HTTP_SENT;
 		}
 
