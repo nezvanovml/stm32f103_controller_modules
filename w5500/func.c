@@ -63,6 +63,7 @@ wiz_NetInfo net_info;
 
 uint16_t w5500_timer = 0;
 uint16_t w5500_seconds_without_connection = 0; // Counts how many seconds without http request from server
+uint8_t w5500_seconds_awaiting [SOCKET_NUM];
 #if W5500_RESET_MCU_IF_NO_CONNECTION == 1
 uint8_t w5500_without_connection_reset = 0; // Counts how many times W5500 was rebooted
 #endif
@@ -206,6 +207,7 @@ int w5500_ini()
 	setRCR(3);
 	// set timeout (1=100 us)
 	setRTR(20);
+	for(uint8_t i = 0; i < SOCKET_NUM; i++) w5500_seconds_awaiting[i] = 0; 
 	w5500_initialized = 1;
 	LEDON(15);
 	return 1;
@@ -430,6 +432,15 @@ int32_t http_server_process(uint8_t sn, uint16_t port, struct HttpRequest *http_
 			setSn_IR(sn, Sn_IR_CON);
 		}
 
+		/* Counter for auto disconnect if no action */
+		if(w5500_seconds_awaiting[sn] < 250){
+			w5500_seconds_awaiting[sn] += 1;
+		} else {
+			w5500_seconds_awaiting[sn] = 0;
+			close(sn);
+			return HTTP_ERROR;
+		}
+
 		if ((size = getSn_RX_RSR(sn)) > 0 && http_request->request[0] == '\0') // Don't need to check SOCKERR_BUSY because it doesn't not occur.
 		{
 			if (size > DEFAULT_BUFFER_SIZE)
@@ -474,18 +485,21 @@ int32_t http_server_process(uint8_t sn, uint16_t port, struct HttpRequest *http_
 
 		break;
 	case SOCK_CLOSE_WAIT:
+		w5500_seconds_awaiting[sn] = 0;
 		http_request->response[0] = '\0';
 		http_request->request[0] = '\0';
 		if ((ret = disconnect(sn)) != SOCK_OK)
 			return HTTP_ERROR;
 		break;
 	case SOCK_INIT:
+		w5500_seconds_awaiting[sn] = 0;	
 		http_request->response[0] = '\0';
 		http_request->request[0] = '\0';
 		if ((ret = listen(sn)) != SOCK_OK)
 			return HTTP_ERROR;
 		break;
 	case SOCK_CLOSED:
+		w5500_seconds_awaiting[sn] = 0;
 		http_request->response[0] = '\0';
 		http_request->request[0] = '\0';
 		if ((ret = socket(sn, Sn_MR_TCP, port, 0x00)) != sn)
