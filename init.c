@@ -12,7 +12,7 @@ Version 7: Added posibility to expose relay as light
 Version 8: Added value diapason for virtual_numeric
 Version 9: Added auto re-init w5500 module if no any connections more then 15 seconds
 Version 10: Added auto reboot MCU if no any connections more then 30*5 (150) seconds
-Version 11: Added auto-reset connection if no data received/send
+Version 11: Added auto-reset connection if no data received/send & Added auto reboot MCU periodically
 
 */
 
@@ -43,6 +43,17 @@ uint16_t interruption_counter = 0;
 #ifdef InputConnection
 #include "modules/input/func.c"
 #endif
+
+/* Auto reset MCU periodically */
+#ifndef MCU_AUTO_RESET_ENABLE
+#define MCU_AUTO_RESET_ENABLE 0
+#endif
+
+/* Auto reset MCU periodically - default period 1440 min (24 hours) */
+#ifndef MCU_AUTO_RESET_PERIOD
+#define MCU_AUTO_RESET_PERIOD 1440
+#endif
+
 
 #include "modules/virtual/func.c"
 
@@ -112,6 +123,9 @@ void modules_interruptions()
     {
         seconds_since_start++;
         interruption_counter = 0;
+        #if MCU_AUTO_RESET_ENABLE == 1
+        if(seconds_since_start >= MCU_AUTO_RESET_PERIOD * 60) NVIC_SystemReset(); // Reset MCU
+        #endif
     }
     // End counting working time
 

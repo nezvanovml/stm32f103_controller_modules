@@ -18,6 +18,7 @@ float bytes_to_temp(uint8_t, uint8_t);
 
 uint8_t ds18b20_ids[DS18B20_MAX_DEVICES][8];
 uint8_t ds18b20_search_finished = 0;
+uint8_t ds18b20_first_measure_received = 0; // set to 1 after 1st measure to prevent sending 0.0 C after start
 uint8_t ds18b20_total_sensors = 0;
 
 uint8_t LastDeviceFlag;
@@ -51,6 +52,7 @@ void ds18b20_int()
             ds18b20_ReadStratcpadAddr(2, ds18b20_ids[i]);
             ds18b20_temperature[i] =  bytes_to_temp(Scratchpad[1], Scratchpad[0]);
         }
+        if (!ds18b20_first_measure_received) ds18b20_first_measure_received = 1; // mark data received
         ds18b20_timer = 0;
     }
     ds18b20_timer++;
@@ -213,8 +215,8 @@ void temperature_to_str(float input, char *temp)
 {
     // TODO: returns -0.0 if unavailable, target = null
     uint8_t integer_part = get_integer(input), fraction_part = get_fraction(input);
-    if ((input < 0 && integer_part == 0 && fraction_part == 0) || (integer_part == 85 && fraction_part == 0))
-    { // 1st variant - sensor not connected, 2nd cariant -  sensor just turned on, no temperature meaured
+    if ((input < 0 && integer_part == 0 && fraction_part == 0) || (integer_part == 85 && fraction_part == 0) || (ds18b20_first_measure_received == 0))
+    { // 1st variant - sensor not connected, 2nd cariant -  sensor just turned on, no temperature meaured, 3rd variant - no measure finished
         xsprintf(temp, "null");
     }
     else if (input < 0)
