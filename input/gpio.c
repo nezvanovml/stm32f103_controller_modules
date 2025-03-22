@@ -96,7 +96,7 @@ Init_PORT.GPIO_Mode = GPIO_Mode_IPD;
 Init_PORT.GPIO_Mode = GPIO_Mode_IPU;
 #endif
 GPIO_Init(Counter_ch1_Port, &Init_PORT);
-GPIO_ResetBits(Counter_ch1_Port, Counter_ch1_Pin);
+// GPIO_ResetBits(Counter_ch1_Port, Counter_ch1_Pin);
 #endif
 
 #ifdef Counter_ch2_Port
@@ -108,7 +108,7 @@ Init_PORT.GPIO_Mode = GPIO_Mode_IPD;
 Init_PORT.GPIO_Mode = GPIO_Mode_IPU;
 #endif
 GPIO_Init(Counter_ch2_Port, &Init_PORT);
-GPIO_ResetBits(Counter_ch2_Port, Counter_ch2_Pin);
+// GPIO_ResetBits(Counter_ch2_Port, Counter_ch2_Pin);
 #endif
 
 #ifdef Counter_ch3_Port
@@ -120,7 +120,7 @@ Init_PORT.GPIO_Mode = GPIO_Mode_IPD;
 Init_PORT.GPIO_Mode = GPIO_Mode_IPU;
 #endif
 GPIO_Init(Counter_ch3_Port, &Init_PORT);
-GPIO_ResetBits(Counter_ch3_Port, Counter_ch3_Pin);
+// GPIO_ResetBits(Counter_ch3_Port, Counter_ch3_Pin);
 #endif
 
 #ifdef Counter_ch4_Port
@@ -132,7 +132,7 @@ Init_PORT.GPIO_Mode = GPIO_Mode_IPD;
 Init_PORT.GPIO_Mode = GPIO_Mode_IPU;
 #endif
 GPIO_Init(Counter_ch4_Port, &Init_PORT);
-GPIO_ResetBits(Counter_ch4_Port, Counter_ch4_Pin);
+// GPIO_ResetBits(Counter_ch4_Port, Counter_ch4_Pin);
 #endif
 
 

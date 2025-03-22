@@ -238,7 +238,21 @@ There are 4 types of input:
 
 #define DISABLE_JTAG 1
 
+#elif InputConnection == 7 // dacha
+#define INPUT_NUM_OF_COUNTER 2
+
+#define Counter_ch1_Port GPIOB
+#define Counter_ch1_Pin GPIO_Pin_5
+#define Counter_ch1_NeedPullDown 0
+
+#define Counter_ch2_Port GPIOB
+#define Counter_ch2_Pin GPIO_Pin_4
+#define Counter_ch2_NeedPullDown 0
+
+#define DISABLE_JTAG 1
+
 #endif
+
 
 #ifndef INPUT_NUM_OF_COUNTER
 #define INPUT_NUM_OF_COUNTER 0
@@ -373,7 +387,7 @@ void input_int()
 
 	for (uint8_t i = 0; i < INPUT_NUM_OF_COUNTER; i++)
 	{
-		if (input_counter_state[i] == 0xFF)
+		if (input_counter_state[i] == 0x0) // TODO: учесть возможность инвертирования входа
 		{
 			if (input_counter_released[i] == 1)
 			{
@@ -590,6 +604,7 @@ void input_add_data_to_str(char *body)
 
 		char temp[5];
 		xsprintf(temp, "%d,", input_counter_get_ticks(i + 1));
+		input_counter_ticks_commit(i + 1);
 		strcat(body, temp);
 		if ((i + 1) == INPUT_NUM_OF_COUNTER)
 			body[strlen(body) - 1] = '\0';
