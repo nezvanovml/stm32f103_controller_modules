@@ -283,7 +283,7 @@ uint8_t input_button_short_mcu[INPUT_NUM_OF_BUTTON], input_button_long_mcu[INPUT
 uint8_t input_binary_sensor_state[INPUT_NUM_OF_BINARY_SENSOR], input_binary_sensor_released[INPUT_NUM_OF_BINARY_SENSOR];
 
 uint8_t input_counter_state[INPUT_NUM_OF_COUNTER], input_counter_released[INPUT_NUM_OF_COUNTER];
-uint32_t input_counter_ticks[INPUT_NUM_OF_COUNTER], input_counter_ticks_freeze[INPUT_NUM_OF_COUNTER];
+uint32_t input_counter_ticks[INPUT_NUM_OF_COUNTER]; //, input_counter_ticks_freeze[INPUT_NUM_OF_COUNTER];
 
 uint16_t input_analog_ADC_buffer[INPUT_NUM_OF_ANALOG_INPUT];
 
@@ -474,7 +474,7 @@ void input_ini()
 	for (uint8_t i; i < INPUT_NUM_OF_COUNTER; i++)
 	{
 		input_counter_ticks[i] = 0;
-		input_counter_ticks_freeze[i] = 0;
+		// input_counter_ticks_freeze[i] = 0;
 		input_counter_released[i] = 0;
 		input_counter_state[i] = 0;
 	}
@@ -538,18 +538,18 @@ uint32_t input_counter_get_ticks(uint8_t counter)
 {
 	if (counter < 1 || counter > INPUT_NUM_OF_COUNTER)
 		return 0;
-	input_counter_ticks_freeze[counter - 1] = input_counter_ticks[counter - 1];
+	// input_counter_ticks_freeze[counter - 1] = input_counter_ticks[counter - 1];
 	return input_counter_ticks[counter - 1];
 }
 
 /// @brief Returns how many ticks got from input.
 /// @param counter
-void input_counter_ticks_commit(uint8_t counter)
-{
-	if (counter < 1 || counter > INPUT_NUM_OF_COUNTER)
-		return 0;
-	input_counter_ticks[counter - 1] -= input_counter_ticks_freeze[counter - 1];
-}
+// void input_counter_ticks_commit(uint8_t counter)
+// {
+// 	if (counter < 1 || counter > INPUT_NUM_OF_COUNTER)
+// 		return 0;
+// 	input_counter_ticks[counter - 1] -= input_counter_ticks_freeze[counter - 1];
+// }
 
 /// @brief Returns 1 if binary sensor is pressed at this moment.
 /// @param sensor
@@ -602,9 +602,9 @@ void input_add_data_to_str(char *body)
 	for (uint8_t i = 0; i < INPUT_NUM_OF_COUNTER; i++)
 	{
 
-		char temp[5];
-		xsprintf(temp, "%d,", input_counter_get_ticks(i + 1));
-		input_counter_ticks_commit(i + 1);
+		char temp[10];
+		xsprintf(temp, "%.2f,", (input_counter_get_ticks(i + 1) / 3200.0));
+		// input_counter_ticks_commit(i + 1);
 		strcat(body, temp);
 		if ((i + 1) == INPUT_NUM_OF_COUNTER)
 			body[strlen(body) - 1] = '\0';
